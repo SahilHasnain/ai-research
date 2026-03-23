@@ -1,6 +1,6 @@
 import os
 import uuid
-import pdfplumber
+import fitz
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
@@ -11,7 +11,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -25,9 +25,9 @@ tts = TTS("tts_models/multilingual/multi-dataset/xtts_v2")
 
 def extract_text(pdf_path: str) -> str:
     text = ""
-    with pdfplumber.open(pdf_path) as pdf:
-        for page in pdf.pages:
-            text += page.extract_text() or ""
+    doc = fitz.open(pdf_path)
+    for page in doc:
+        text += page.get_text("text") or ""
     return text
 
 
@@ -73,7 +73,7 @@ async def generate_audiobook(
         tts.tts_to_file(
             text=chunk,
             speaker_wav=voice_path,
-            language="en",
+            language="ur",
             file_path=chunk_path,
         )
         audio_segments.append(AudioSegment.from_wav(chunk_path))
