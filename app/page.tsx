@@ -21,7 +21,7 @@ export default function Home() {
     form.append("voice", voice);
 
     try {
-      const res = await fetch("http://localhost:8000/generate", {
+      const res = await fetch("https://spryer-unpitied-lorette.ngrok-free.dev/generate", {
         method: "POST",
         body: form,
       });
@@ -30,7 +30,7 @@ export default function Home() {
         throw new Error(err.detail || "Generation failed");
       }
       const data = await res.json();
-      setAudioUrl(`http://localhost:8000${data.audio_url}`);
+      setAudioUrl(`https://spryer-unpitied-lorette.ngrok-free.dev${data.audio_url}`);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
