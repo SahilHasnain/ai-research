@@ -3,14 +3,13 @@ import { useState, useRef } from "react";
 
 export default function Home() {
   const [book, setBook] = useState<File | null>(null);
-  const [voice, setVoice] = useState<File | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!book || !voice) return;
+    if (!book) return;
 
     setLoading(true);
     setError(null);
@@ -18,7 +17,6 @@ export default function Home() {
 
     const form = new FormData();
     form.append("book", book);
-    form.append("voice", voice);
 
     try {
       const res = await fetch("http://localhost:8000/generate", {
@@ -56,19 +54,9 @@ export default function Home() {
             />
           </label>
 
-          <label className="flex flex-col gap-1 text-sm text-zinc-600 dark:text-zinc-300">
-            Upload Scholar Voice Sample (WAV, min 6 seconds)
-            <input
-              type="file"
-              accept=".wav"
-              onChange={(e) => setVoice(e.target.files?.[0] || null)}
-              className="mt-1 file:mr-3 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-zinc-100 file:text-zinc-700 hover:file:bg-zinc-200"
-            />
-          </label>
-
           <button
             type="submit"
-            disabled={!book || !voice || loading}
+            disabled={!book || loading}
             className="mt-2 h-11 rounded-full bg-zinc-900 text-white text-sm font-medium disabled:opacity-40 hover:bg-zinc-700 transition-colors"
           >
             {loading ? "Generating... (this may take a while)" : "Generate Audiobook"}
