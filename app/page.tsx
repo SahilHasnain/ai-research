@@ -24,6 +24,7 @@ export default function Home() {
       const res = await fetch("https://spryer-unpitied-lorette.ngrok-free.dev/generate", {
         method: "POST",
         body: form,
+        headers: { "ngrok-skip-browser-warning": "true" },
       });
       if (!res.ok) {
         const err = await res.json();
